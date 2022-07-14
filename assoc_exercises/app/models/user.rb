@@ -8,6 +8,8 @@
 #  updated_at :datetime         not null
 #
 class User < ApplicationRecord
+    validates :name, presence: true
+    
     has_many( :enrollments,
         primary_key: :id,
         foreign_key: :student_id,
@@ -18,5 +20,12 @@ class User < ApplicationRecord
     has_many( :enrolled_courses,
         through: :enrollments,
         source: :course
+    )
+
+    has_many( :taught_courses,
+        primary_key: :id,
+        foreign_key: :instructor_id,
+        class_name: :Course,
+        dependent: :destroy
     )
 end
