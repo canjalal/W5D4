@@ -12,13 +12,33 @@
 class ShortenedUrl < ApplicationRecord
     validates :long_url, :short_url, uniqueness: true, presence: true
 
-    belongs_to( :user,
+    belongs_to( :submitter,
         :primary_key => :id,
         :foreign_key => :user_id,
         :class_name => :User
     )
 
+
+
     def self.random_code
-        SecureRandom.urlsafe_base64
+        url = SecureRandom.urlsafe_base64
+        until !self.exists?(:short_url => url)
+            url = SecureRandom.urlsafe_base64
+        end
+        url
+    end
+
+    after_initialize do |user|
+        generate_short_url
+        puts "You have created a shortened url!"
+    end
+    
+    after_find do |user|
+        puts "You have found a shortened url!"
+    end
+
+    private
+    def generate_short_url
+        ShortenedUrl.random_code
     end
 end
