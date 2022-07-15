@@ -17,4 +17,8 @@ class ShortenedUrl < ApplicationRecord
         :foreign_key => :user_id,
         :class_name => :User
     )
+
+    def self.random_code
+        SecureRandom.urlsafe_base64
+    end
 end
